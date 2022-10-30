@@ -1,20 +1,29 @@
 <!DOCTYPE html>
 <html lang="eng">
 <head>
-  <title>fullscreen 2d canvas</title>
+  <title>Wave</title>
   <meta charset="UTF-8">
   <meta http=equiv="X-UA-Compatible" content="IE=Edge">
   <meta name="viewport" content="width=device-width,height=768" initia-scale=1">
   <link rel="stylesheet" href="style/style.css" />
 </head>
 <body>
+  <div class="controls">
+  <p id="p_fps" for="fps">fps:</label>
+  <p id="p_speed">speed</p>
+  <input type="range" min="-10" max="10" value="-3" class="slider" id="speed">
+  <p id="p_height">height</p>
+  <input type="range" min="0" max="1000" value="300" class="slider" id="height">
+  <p>algorithm</p>
   <select id="algolist" onchange="setAlgorithm();">
     <option value="perlin">Perlin noise</option>
     <option value="simplex">Simplex noise</option>
   </select>
+  </div>
   <canvas id="canvas"</canvas>
   <script src="perlin.js"></script>
   <script src="setup.js"></script>
+  <script src="controls.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

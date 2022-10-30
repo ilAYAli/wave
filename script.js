@@ -1,21 +1,5 @@
 "use strict";
 
-let fps = new Fps();
-
-let algorithm;
-function getAlgorithm() {
-    algorithm = localStorage.getItem("wave:algorithm") || "perlin";
-    console.log("get:", algorithm);
-    let elt = document.getElementById("algolist");
-    elt.value = algorithm;
-}
-function setAlgorithm() {
-    const name = document.getElementById("algolist").value
-    console.log("set:", name);
-    algorithm = name;
-    localStorage.setItem("wave:algorithm", name);
-    // localStorage.removeItem("wave:algorithm");
-}
 
 const gradient = [
     "#ffffff", "#fbfbfc", "#f7f6f8", "#f2f2f5", "#eeeef1", "#eaeaee", "#e6e6eb", "#e2e1e7",
@@ -40,8 +24,8 @@ class Grid {
         this.cols = Math.floor(screen_h / this.step_c);
         this.arr = new Array(this.rows * this.cols);
         this.arr.fill(0);
-        this.rnd = new Array(this.rows * this.cols);
-        this.rnd.fill(0);
+        this.noise = new Array(this.rows * this.cols);
+        this.noise.fill(0);
         this.noise_max = 0;
     }
 
@@ -60,23 +44,25 @@ class Grid {
             this.arr[i] = rotateX(center_x - (x * this.step_r), (y * this.step_c));
 
             let r;
-            if (algorithm == 'perlin') {
-                this.noise_max = Math.ceil(canvas.height / 2);
-                r = map(noise.perlin2((x / 20) , (y / 20) - t), 0, this.noise_max);
+            if (opt_algorithm == 'perlin') {
+                //this.noise_max = Math.ceil(canvas.height / 2);
+                this.noise_max = Math.ceil(opt_height);
+                r = map(noise.perlin2((x / 50) , (y / 50) + t), 0, this.noise_max);
             } else {
-                this.noise_max = Math.ceil(canvas.height / 3);
-                r = map(noise.simplex2((x / 30) , (y / 30) - t), 0, this.noise_max);
+                //this.noise_max = Math.ceil(canvas.height / 3);
+                this.noise_max = Math.ceil(opt_height);
+                r = map(noise.simplex2((x / 50) , (y / 50) + t), 0, this.noise_max);
             }
-            this.rnd[i] = r;
+            this.noise[i] = r;
         });
     }
 
-    #rndHeight = function(idx) {
-        return this.arr[idx][1] + this.rnd[idx];
+    #noiseHeight = function(idx) {
+        return this.arr[idx][1] + this.noise[idx];
     }
 
-    #rndColor = function(idx) {
-        let col = this.rnd[idx];
+    #noiseColor = function(idx) {
+        let col = this.noise[idx];
         col += this.noise_max;
         return gradient[Math.floor(mapValues(col, [0, this.noise_max * 2], [0, gradient.length]))];
     }
@@ -86,17 +72,17 @@ class Grid {
             for (let r = 0; r < this.rows; r++) {
                 const idx0 = c * this.rows + r;
                 const idx1 = idx0 + this.rows;
-                let p0 = [ this.arr[idx0][0], this.#rndHeight(idx0) ];
-                let p1 = [ this.arr[idx1][0], this.#rndHeight(idx1) ];
+                let p0 = [ this.arr[idx0][0], this.#noiseHeight(idx0) ];
+                let p1 = [ this.arr[idx1][0], this.#noiseHeight(idx1) ];
 
                 ctx.beginPath();
                 ctx.globalAlpha = 0.7;
                 ctx.moveTo(p0[0], p0[1]);
                 ctx.lineTo(p1[0], p1[1]);
 
-                let col = this.rnd[idx0] + 400;
+                let col = this.noise[idx0] + 400;
                 const v = Math.floor(mapValues(col, [0, 600], [0, 255])).toString(16)
-                ctx.strokeStyle = this.#rndColor(idx0);
+                ctx.strokeStyle = this.#noiseColor(idx0);
                 ctx.stroke();
             }
         }
@@ -105,20 +91,19 @@ class Grid {
             for (let r = 0; r < this.rows - 1; r++) {
                 const idx0 = c * this.rows + r;
                 const idx1 = idx0 + 1;
-                let p0 = [ this.arr[idx0][0], this.#rndHeight(idx0) ];
-                let p1 = [ this.arr[idx1][0], this.#rndHeight(idx1) ];
+                let p0 = [ this.arr[idx0][0], this.#noiseHeight(idx0) ];
+                let p1 = [ this.arr[idx1][0], this.#noiseHeight(idx1) ];
 
                 ctx.beginPath();
                 ctx.globalAlpha = 0.7;
                 ctx.moveTo(p0[0], p0[1]);
                 ctx.lineTo(p1[0], p1[1]);
-                ctx.strokeStyle = this.#rndColor(idx0);
+                ctx.strokeStyle = this.#noiseColor(idx0);
 
                 ctx.stroke();
             }
         }
     }
-
 }
 
 
@@ -153,7 +138,7 @@ function map(val, min, max) {
 
 let grid;
 function setup() {
-    algorithm = getAlgorithm();
+    opt_algorithm = getAlgorithm();
     noise.seed(Math.random());
 
     const step = 50;
@@ -166,8 +151,8 @@ function draw() {
 
     grid.animate();
     grid.draw();
-    t += 0.0025;
-    fps.count();
+    t += opt_speed;
+    ctrl.controls_tick();
     requestAnimationFrame(draw);
 }
 
