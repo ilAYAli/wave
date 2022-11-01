@@ -4,15 +4,18 @@ class Ctrl {
     constructor() {
         this.db = "wave:storage";
         this.algorithm = this.#loadValue("algorithm");
-        this.speed = Number(this.#loadValue("speed"));
+        this.xspeed = Number(this.#loadValue("xspeed"));
+        this.yspeed = Number(this.#loadValue("yspeed"));
         this.height = Number(this.#loadValue("height"));
 
-        this.p_speed = document.getElementById("p_speed");
+        this.p_xspeed = document.getElementById("p_xspeed");
+        this.p_yspeed = document.getElementById("p_yspeed");
         this.p_height = document.getElementById("p_height");
         this.p_fps = document.getElementById("p_fps");
         this.fps = new Fps();
 
-        if (this.speed) this.setSpeed(this.speed);
+        if (this.xspeed) this.setXspeed(this.xspeed);
+        if (this.yspeed) this.setYspeed(this.yspeed);
         if (this.height) this.setHeight(this.height);
         if (this.algorithm) this.setAlgorithm(this.algorithm);
     }
@@ -28,8 +31,16 @@ class Ctrl {
         return jd[k] || "";
     }
 
-    setSpeed = function(value) {
-        const key = "speed";
+    setXspeed = function(value) {
+        const key = "xspeed";
+        let elt = document.getElementById(key);
+        elt.value = value;
+        this[key] = Number(value) / 1000;
+        this.#storeValue(key, value);
+    }
+
+    setYspeed = function(value) {
+        const key = "yspeed";
         let elt = document.getElementById(key);
         elt.value = value;
         this[key] = Number(value) / 1000;
@@ -61,7 +72,8 @@ class Ctrl {
     }
 
     tick = function() {
-        this.p_speed.innerText = "speed: " + this.speed;
+        this.p_xspeed.innerText = "x speed: " + this.xspeed;
+        this.p_yspeed.innerText = "y speed: " + this.yspeed;
         this.p_height.innerText = "height: " + this.height;
 
         this.fps.count();

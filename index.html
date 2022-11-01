@@ -9,8 +9,11 @@
 </head>
 <body>
   <div class="controls">
-  <p id="p_speed">speed</p>
-  <input type="range" min="-10" max="10" value="0" class="slider" id="speed" oninput="ctrl.setSpeed(this.value);">
+
+  <p id="p_xspeed">xspeed</p>
+  <input type="range" min="-10" max="10" value="0" class="slider" id="xspeed" oninput="ctrl.setXspeed(this.value);">
+  <p id="p_yspeed">yspeed</p>
+  <input type="range" min="-10" max="10" value="0" class="slider" id="yspeed" oninput="ctrl.setYspeed(this.value);">
   <p id="p_height">height</p>
   <input type="range" min="-1000" max="1000" value="0" class="slider" id="height" oninput="ctrl.setHeight(this.value);">
   <p>algorithm</p>

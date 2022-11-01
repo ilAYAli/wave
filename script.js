@@ -47,10 +47,10 @@ class Grid {
             let r;
             if (ctrl.algorithm == 'perlin') {
                 this.noise_max = Math.ceil(ctrl.height);
-                r = map(noise.perlin2((x / 50) , (y / 50) + t), 0, this.noise_max);
+                r = map(noise.perlin2(x / 50 +xt , y / 50 + yt), 0, this.noise_max);
             } else {
                 this.noise_max = Math.ceil(ctrl.height);
-                r = map(noise.simplex2((x / 50) , (y / 50) + t), 0, this.noise_max);
+                r = map(noise.simplex2(x / 50 +xt , y / 50 + yt), 0, this.noise_max);
             }
             this.noise[i] = r;
         });
@@ -143,13 +143,15 @@ function setup() {
     grid = new Grid(canvas.width, canvas.height, step);
 }
 
-let t = 0;
+let xt = 0;
+let yt = 0;
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     grid.animate();
     grid.draw();
-    t += ctrl.speed;
+    xt += ctrl.xspeed;
+    yt += ctrl.yspeed;
     ctrl.tick();
     requestAnimationFrame(draw);
 }
