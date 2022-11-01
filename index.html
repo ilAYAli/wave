@@ -9,16 +9,16 @@
 </head>
 <body>
   <div class="controls">
-  <p id="p_fps" for="fps">fps:</label>
   <p id="p_speed">speed</p>
-  <input type="range" min="-10" max="10" value="-3" class="slider" id="speed">
+  <input type="range" min="-10" max="10" value="0" class="slider" id="speed" oninput="ctrl.setSpeed(this.value);">
   <p id="p_height">height</p>
-  <input type="range" min="0" max="1000" value="300" class="slider" id="height">
+  <input type="range" min="-1000" max="1000" value="0" class="slider" id="height" oninput="ctrl.setHeight(this.value);">
   <p>algorithm</p>
-  <select id="algolist" onchange="setAlgorithm();">
+  <select id="algorithm" id="algorithm" onchange="ctrl.setAlgorithm(this.value);">
     <option value="perlin">Perlin noise</option>
     <option value="simplex">Simplex noise</option>
   </select>
+  <p id="p_fps" for="fps"></label>
   </div>
   <canvas id="canvas"</canvas>
   <script src="perlin.js"></script>

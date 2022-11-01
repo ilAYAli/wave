@@ -1,5 +1,6 @@
 "use strict";
 
+let ctrl = new Ctrl();
 
 const gradient = [
     "#ffffff", "#fbfbfc", "#f7f6f8", "#f2f2f5", "#eeeef1", "#eaeaee", "#e6e6eb", "#e2e1e7",
@@ -44,13 +45,11 @@ class Grid {
             this.arr[i] = rotateX(center_x - (x * this.step_r), (y * this.step_c));
 
             let r;
-            if (opt_algorithm == 'perlin') {
-                //this.noise_max = Math.ceil(canvas.height / 2);
-                this.noise_max = Math.ceil(opt_height);
+            if (ctrl.algorithm == 'perlin') {
+                this.noise_max = Math.ceil(ctrl.height);
                 r = map(noise.perlin2((x / 50) , (y / 50) + t), 0, this.noise_max);
             } else {
-                //this.noise_max = Math.ceil(canvas.height / 3);
-                this.noise_max = Math.ceil(opt_height);
+                this.noise_max = Math.ceil(ctrl.height);
                 r = map(noise.simplex2((x / 50) , (y / 50) + t), 0, this.noise_max);
             }
             this.noise[i] = r;
@@ -138,7 +137,6 @@ function map(val, min, max) {
 
 let grid;
 function setup() {
-    opt_algorithm = getAlgorithm();
     noise.seed(Math.random());
 
     const step = 50;
@@ -151,8 +149,8 @@ function draw() {
 
     grid.animate();
     grid.draw();
-    t += opt_speed;
-    ctrl.controls_tick();
+    t += ctrl.speed;
+    ctrl.tick();
     requestAnimationFrame(draw);
 }
 
